@@ -44,6 +44,13 @@ module.exports = function (ac) {
       secondsPerBeat = 60.0 / bpm
     },
 
+    info: function () {
+      return {
+        bpm,
+        secondsPerBeat
+      }
+    },
+
     start: function () {
       currentNote = 0
       nextNoteTime = ac.currentTime
