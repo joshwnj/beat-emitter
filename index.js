@@ -58,13 +58,17 @@ module.exports = function (ac) {
     },
 
     start: function () {
-      currentNote = 0
-      nextNoteTime = ac.currentTime
+      nextBeatTime = ac.currentTime
       w.postMessage('start')
     },
 
     stop: function () {
       w.postMessage('stop')
+    },
+
+    reset: function () {
+      neatBeatTime = ac.currentTime
+      currentBeat = 0
     },
 
     beat,
