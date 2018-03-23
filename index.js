@@ -38,6 +38,12 @@ module.exports = function (ac) {
     if (e.data === 'tick') { onTick() }
   }
 
+  function beat (time) {
+    emitter.emit('schedule', currentBeat, time || ac.currentTime)
+    currentBeat ++
+    return time + secondsPerBeat
+  }
+
   return {
     setBpm: function (value) {
       bpm = value
@@ -61,6 +67,7 @@ module.exports = function (ac) {
       w.postMessage('stop')
     },
 
+    beat,
     emitter,
     schedule: (func) => {
       emitter.on('schedule', func)
@@ -73,9 +80,7 @@ module.exports = function (ac) {
 
   function onTick () {
     while (nextBeatTime < ac.currentTime + scheduleAheadTime) {
-      emitter.emit('schedule', currentBeat, nextBeatTime)
-      nextBeatTime += secondsPerBeat
-      currentBeat++
+      nextBeatTime = beat(nextBeatTime)
     }
   }
 }
