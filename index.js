@@ -74,8 +74,15 @@ module.exports = function (ac) {
     beat,
     emitter,
     schedule: (func) => {
-      emitter.on('schedule', func)
-      return func
+      const wrappedFunc = (beat, time) => {
+        try {
+          func(beat, time)
+        } catch (e) {
+          console.error(e)
+        }
+      }
+      emitter.on('schedule', wrappedFunc)
+      return wrappedFunc
     },
     clearSchedule: emitter.removeListener.bind(emitter, 'schedule')
   }
