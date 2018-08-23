@@ -57,7 +57,8 @@ module.exports = function (ac) {
       }
     },
 
-    start: function () {
+    start: function (beat = 0) {
+      currentBeat = beat
       nextBeatTime = ac.currentTime
       w.postMessage('start')
     },
