@@ -29,6 +29,8 @@ module.exports = function (ac) {
   let bpm = 60
   let secondsPerBeat = 60.0 / bpm
   let schedules = []
+  let loopFrom
+  let loopTo
 
   const w = new Worker(URL.createObjectURL(new Blob(
     [ funcToString(worker) ], 
@@ -39,9 +41,18 @@ module.exports = function (ac) {
     if (e.data === 'tick') { onTick() }
   }
 
+  function applyLoop (beat, from, to) {
+    if (!to || beat < to) { return beat }
+
+    const span = to - from
+    return applyLoop(beat - span, from, to)
+  }
+
   function beat (time) {
     emitter.emit('schedule', currentBeat, time || ac.currentTime)
-    currentBeat ++
+
+    currentBeat = applyLoop(currentBeat + 1, loopFrom, loopTo)
+
     return time + secondsPerBeat
   }
 
@@ -54,7 +65,9 @@ module.exports = function (ac) {
     info: function () {
       return {
         bpm,
-        secondsPerBeat
+        secondsPerBeat,
+        loopFrom,
+        loopTo
       }
     },
 
@@ -62,6 +75,11 @@ module.exports = function (ac) {
       currentBeat = beat
       nextBeatTime = ac.currentTime
       w.postMessage('start')
+    },
+
+    loop: function ({ from, to }) {
+      loopFrom = from
+      loopTo = to
     },
 
     stop: function () {
