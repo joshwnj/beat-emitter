@@ -28,6 +28,7 @@ module.exports = function (ac) {
   let nextBeatTime = 0.0
   let bpm = 60
   let secondsPerBeat = 60.0 / bpm
+  let schedules = []
 
   const w = new Worker(URL.createObjectURL(new Blob(
     [ funcToString(worker) ], 
@@ -83,9 +84,14 @@ module.exports = function (ac) {
         }
       }
       emitter.on('schedule', wrappedFunc)
+      schedules.push(wrappedFunc)
       return wrappedFunc
     },
-    clearSchedule: emitter.removeListener.bind(emitter, 'schedule')
+    clearSchedule: emitter.removeListener.bind(emitter, 'schedule'),
+    clearAllSchedules: () => {
+      schedules.forEach(s => emitter.removeListener('schedule', s))
+      schedules = []
+    }
   }
 
   // ----
