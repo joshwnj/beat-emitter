@@ -1,6 +1,6 @@
 {
   "name": "beat-emitter",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "WebAudio scheduler with an event emitter",
   "main": "index.js",
   "scripts": {
