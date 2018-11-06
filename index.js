@@ -31,9 +31,10 @@ module.exports = function (ac) {
   let schedules = []
   let loopFrom
   let loopTo
+  let shuffleSlice
 
   const w = new Worker(URL.createObjectURL(new Blob(
-    [ funcToString(worker) ], 
+    [ funcToString(worker) ],
     { type: 'application/javascript' }
   )))
 
@@ -60,6 +61,18 @@ module.exports = function (ac) {
     setBpm: function (value) {
       bpm = value
       secondsPerBeat = 60.0 / bpm
+    },
+
+    setShuffle: function (value) {
+      if (!value) {
+        shuffleSlice = null
+      }
+      else {
+        shuffleSlice = [
+          secondsPerBeat * (1 - value),
+          secondsPerBeat * (1 + value),
+        ]
+      }
     },
 
     info: function () {
@@ -95,8 +108,10 @@ module.exports = function (ac) {
     emitter,
     schedule: (func) => {
       const wrappedFunc = (beat, time) => {
+        const shuffle = shuffleSlice ? shuffleSlice[beat % 2] : 0
+
         try {
-          func(beat, time)
+          func(beat, time + shuffle)
         } catch (e) {
           console.error(e)
         }

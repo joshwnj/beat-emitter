@@ -16,6 +16,10 @@ const ac = new AudioContext()
 const beats = beatEmitter(ac)
 
 beats.setBpm(110)
+
+// optional: shuffle factor (best results between .02 and .09)
+beats.setShuffle(.07)
+
 beats.start()
 beats.schedule((beat, time) => {
   // play a note every 2nd beat
@@ -28,6 +32,8 @@ beats.schedule((beat, time) => {
   }
 })
 ```
+
+
 
 ## Acknowledgements
 
