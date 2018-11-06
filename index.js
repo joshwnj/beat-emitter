@@ -5,12 +5,21 @@ const EventEmitter = require('events')
 function worker () {
   let timerId
 
+  function stop () {
+    clearInterval(timerId)
+    timerId = null
+  }
+
   self.onmessage = function (e) {
-    if (e.data === 'start') {
+    switch (e.data) {
+    case 'start':
+      stop()
       timerId = setInterval(postMessage.bind(null, 'tick'), 25)
-    } else if (e.data === 'stop') {
-      clearInterval(timerId)
-      timerId = null
+      break
+
+    case 'stop':
+      stop() 
+      break
     }
   }
 }
