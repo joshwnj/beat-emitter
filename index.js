@@ -6,12 +6,12 @@ function worker () {
   let timerId
 
   self.onmessage = function (e) {
-	  if (e.data === 'start') {
+    if (e.data === 'start') {
       timerId = setInterval(postMessage.bind(null, 'tick'), 25)
-	  } else if (e.data === 'stop') {
-		  clearInterval(timerId)
-		  timerId = null
-	  }
+    } else if (e.data === 'stop') {
+      clearInterval(timerId)
+      timerId = null
+    }
   }
 }
 
